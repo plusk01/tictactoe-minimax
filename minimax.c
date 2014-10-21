@@ -12,6 +12,9 @@
 
 static minimax_move_t choice; // the move computed by minimax
 
+// Helper function prototypes
+minimax_score_t minimax_recurse(minimax_board_t* board, bool player);
+
 
 // ----------------------------------------------------------------------------
 
