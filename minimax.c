@@ -51,8 +51,13 @@ int16_t minimax_computeBoardScore(minimax_board_t* board, bool player) {
 // ----------------------------------------------------------------------------
 
 minimax_score_t minimax_recurse(minimax_board_t* board, bool player) {
-	if (minimax_checkForWinner(board)) {
-		return minimax_computeBoardScore(board, !player);
+	// Compute this board's score.
+	// This checks if there is a winner and returns appropriate score
+	minimax_score_t scoreTest = minimax_computeBoardScore(board, !player);
+
+	if (minimax_isGameOver(scoreTest)) {
+		// Base case
+		return scoreTest;
 	}
 
 	minimax_score_t scores[SCORES_MAX] = { 0 };
@@ -134,6 +139,24 @@ bool minimax_checkForWinner(minimax_board_t* board) {
 // ----------------------------------------------------------------------------
 
 bool minimax_isVerticalWinnner(minimax_board_t* board, uint8_t* candidate) {
+	for (col=0; col<MINIMAX_BOARD_COLUMNS; col++) {
+		*candidate = board->squares[0][col];
+
+		// start iterating on the next row
+		uint8_t winner = true;
+		for (row=1; row<MINIMAX_BOARD_ROWS; row++) {
+			if (board->squares[row][col] != *candidate) {
+				winner = false;
+				break;
+			}
+		}
+
+		if (winner) return true;
+	}
+
+
+
+
 	for (col=0; col<MINIMAX_BOARD_COLUMNS; col++) {
 		*candidate = board->squares[0][col];
 
