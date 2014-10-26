@@ -75,21 +75,21 @@ int main() {
 	// printf("next move for board1: (%d, %d)\n\r", row, column);
 	// minimax_computeNextMove(&board2, true, &row, &column);
 	// printf("next move for board2: (%d, %d)\n\r", row, column);
-	minimax_computeNextMove(&board3, true, &row, &column);
-	printf("next move for board3: (%d, %d)\n\r", row, column);
+	// minimax_computeNextMove(&board3, true, &row, &column);
+	// printf("next move for board3: (%d, %d)\n\r", row, column);
 
-	// // Play board three
-	// board3.squares[0][1] = MINIMAX_PLAYER_SQUARE;
-	// // minimax_computeNextMove(&board3, false, &row, &column);
-	// // printf("next move for board3: (%d, %d)\n\r", row, column);
-
-	// board3.squares[0][2] = MINIMAX_OPPONENT_SQUARE;
-	// // minimax_computeNextMove(&board3, true, &row, &column);
-	// // printf("next move for board3: (%d, %d)\n\r", row, column);
-
-	// board3.squares[1][1] = MINIMAX_PLAYER_SQUARE;
+	// Play board three
+	board3.squares[0][1] = MINIMAX_PLAYER_SQUARE;
 	// minimax_computeNextMove(&board3, false, &row, &column);
 	// printf("next move for board3: (%d, %d)\n\r", row, column);
+
+	board3.squares[0][2] = MINIMAX_OPPONENT_SQUARE;
+	// minimax_computeNextMove(&board3, true, &row, &column);
+	// printf("next move for board3: (%d, %d)\n\r", row, column);
+
+	board3.squares[1][1] = MINIMAX_PLAYER_SQUARE;
+	minimax_computeNextMove(&board3, false, &row, &column);
+	printf("next move for board3: (%d, %d)\n\r", row, column);
 
 	// minimax_computeNextMove(&board4, false, &row, &column);
 	// printf("next move for board4: (%d, %d)\n\r", row, column);
