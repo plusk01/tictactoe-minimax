@@ -58,10 +58,21 @@ int main() {
 	board5.squares[2][1] = MINIMAX_EMPTY_SQUARE;
 	board5.squares[2][2] = MINIMAX_EMPTY_SQUARE;
 
+	minimax_board_t board6;
+	board6.squares[0][0] = MINIMAX_OPPONENT_SQUARE;
+	board6.squares[0][1] = MINIMAX_EMPTY_SQUARE;
+	board6.squares[0][2] = MINIMAX_PLAYER_SQUARE;
+	board6.squares[1][0] = MINIMAX_PLAYER_SQUARE;
+	board6.squares[1][1] = MINIMAX_EMPTY_SQUARE;
+	board6.squares[1][2] = MINIMAX_EMPTY_SQUARE;
+	board6.squares[2][0] = MINIMAX_PLAYER_SQUARE;
+	board6.squares[2][1] = MINIMAX_OPPONENT_SQUARE;
+	board6.squares[2][2] = MINIMAX_OPPONENT_SQUARE;
+
 	uint8_t row, column;
 
-	minimax_computeNextMove(&board1, true, &row, &column);
-	printf("next move for board1: (%d, %d)\n\r", row, column);
+	minimax_computeNextMove(&board6, true, &row, &column);
+	printf("next move for board6: (%d, %d)\n\r", row, column);
 	// minimax_computeNextMove(&board2, true, &row, &column);
 	// printf("next move for board2: (%d, %d)\n\r", row, column);
 	// minimax_computeNextMove(&board3, true, &row, &column);

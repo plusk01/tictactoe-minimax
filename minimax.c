@@ -10,7 +10,11 @@
 #define SCORES_MAX		(MINIMAX_BOARD_ROWS * MINIMAX_BOARD_COLUMNS)
 #define MOVES_MAX		SCORES_MAX
 
+#define DEBUG_PRINT			false
+#define DEBUG_ALLOW_COLLOR	true
+
 static minimax_move_t choice; // the move computed by minimax
+static minimax_move_t tmpChoice; // the tested minimax choice
 
 // Helper function prototypes
 minimax_score_t minimax_recurse(minimax_board_t* board, bool player, uint8_t depth);
@@ -19,7 +23,7 @@ bool minimax_isBoardFull(minimax_board_t* board);
 bool minimax_isVerticalWinnner(minimax_board_t* board, uint8_t* candidate);
 bool minimax_isHorizontalWinnner(minimax_board_t* board, uint8_t* candidate);
 bool minimax_isDiagonalWinnner(minimax_board_t* board, uint8_t* candidate);
-void minimax_printBoard(minimax_board_t* board);
+void minimax_printBoard(minimax_board_t* board, minimax_move_t* move, bool mark);
 
 // ----------------------------------------------------------------------------
 
@@ -33,7 +37,9 @@ void minimax_computeNextMove(minimax_board_t* board, bool player, uint8_t* row, 
 	// call the recursive algorithm
 	minimax_recurse(board, player, 0);
 
-	minimax_printBoard(board);
+#ifdef DEBUG_PRINT
+	minimax_printBoard(board, &choice, true);
+#endif
 
 	// minimax_recurse() sets the global var, choice, so now return the
 	// row and column from the choice that has been calculated by the algorithm.
@@ -52,29 +58,43 @@ bool minimax_isGameOver(minimax_score_t score) {
 int16_t minimax_computeBoardScore(minimax_board_t* board, bool player) {
 	// go get the candidate, figure out who the player is, +/- based on that.
 	uint8_t winner = MINIMAX_EMPTY_SQUARE;
-	uint8_t playerValue = (player) ? MINIMAX_PLAYER_SQUARE : MINIMAX_OPPONENT_SQUARE;
-	uint8_t opponentValue = (!player) ? MINIMAX_PLAYER_SQUARE : MINIMAX_OPPONENT_SQUARE;
+	uint8_t playerValue = (true) ? MINIMAX_PLAYER_SQUARE : MINIMAX_OPPONENT_SQUARE;
+	uint8_t opponentValue = (!true) ? MINIMAX_PLAYER_SQUARE : MINIMAX_OPPONENT_SQUARE;
 	
 	// find a winner
 	if (!winner) minimax_isVerticalWinnner(board, &winner);
+#if DEBUG_PRINT
 	printf("winner after v: %u\r\n", winner);
+#endif
 	if (!winner) minimax_isHorizontalWinnner(board, &winner);
+#if DEBUG_PRINT
 	printf("winner after h: %u\r\n", winner);
+#endif
 	if (!winner) minimax_isDiagonalWinnner(board, &winner);
+#if DEBUG_PRINT
 	printf("winner after d: %u\r\n", winner);
+#endif
 
 	// figure out score
 	if (winner == playerValue) {
-		printf("+++Winner is player\r\n");
+#if DEBUG_PRINT
+		printf("+++ Winner is player; winner: %d, player: %d\r\n", winner, playerValue);
+#endif
 		return MINIMAX_PLAYER_WINNING_SCORE;
 	} else if (winner == opponentValue) {
-		printf("+++Winner is opponent; winner: %d, opponent: %d\r\n", winner, opponentValue);
+#if DEBUG_PRINT
+		printf("+++ Winner is opponent; winner: %d, opponent: %d\r\n", winner, opponentValue);
+#endif
 		return MINIMAX_OPPONENT_WINNING_SCORE;
 	} else if (minimax_isBoardFull(board)) {
-		printf("+++draw\r\n");
+#if DEBUG_PRINT
+		printf("+++ draw\r\n");
+#endif
 		return MINIMAX_DRAW_SCORE;
 	} else {
-		printf("+++not end game\r\n");
+#if DEBUG_PRINT
+		printf("+++ not end game\r\n");
+#endif
 		return MINIMAX_NOT_ENDGAME;
 	}
 
@@ -87,22 +107,28 @@ int16_t minimax_computeBoardScore(minimax_board_t* board, bool player) {
 minimax_score_t minimax_recurse(minimax_board_t* board, bool player, uint8_t depth) {
 	depth++;
 
+#if DEBUG_PRINT
 	printf("********* MINIMAX [%u] *********\r\n", depth);
 	if (player) printf("-- \033[92mPLAYER (X)\033[0m --\r\n\r\n");
 	else printf("-- \033[93mOPPONENT (O)\033[0m --\r\n\r\n");
 	
-	minimax_printBoard(board);
+	minimax_printBoard(board, &tmpChoice, (depth != 1));
+
+#endif
 
 	// Compute this board's score.
 	// This checks if there is a winner and returns appropriate score
-	minimax_score_t scoreTest = minimax_computeBoardScore(board, !player);
+	minimax_score_t scoreTest = minimax_computeBoardScore(board, player);
 
-
+#if DEBUG_PRINT
 	printf("\r\nscoreTest: %d\r\n", scoreTest);
+#endif
 
 	if (minimax_isGameOver(scoreTest)) {
 		// Base case
+#if DEBUG_PRINT
 		printf("Base case score: %d\r\n", scoreTest);
+#endif
 		return scoreTest;
 	}
 
@@ -124,11 +150,14 @@ minimax_score_t minimax_recurse(minimax_board_t* board, bool player, uint8_t dep
 				board->squares[row][col] = MINIMAX_OPPONENT_SQUARE;
 			}
 
-			// minimax to find the score of that move
-			minimax_score_t score = minimax_recurse(board, !player, depth);
-
 			// create a move based on the current (row, col)
 			minimax_move_t move = { row, col };
+
+			// for debugging
+			tmpChoice = move;
+
+			// minimax to find the score of that move
+			minimax_score_t score = minimax_recurse(board, !player, depth);
 
 			// add the score to the move-score table
 			scores[counter] = score;
@@ -155,9 +184,11 @@ minimax_score_t minimax_recurse(minimax_board_t* board, bool player, uint8_t dep
 	choice = moves[index];
 	minimax_score_t finalScore = scores[index];
 
+#if DEBUG_PRINT
 	printf("finalScore: %d (from index: %u)\r\n", scoreTest, index);
 	char *playerStr = (player) ? "player" : "opponent";
 	printf("Adding %s at (%d, %d)\r\n", playerStr, choice.row, choice.column);
+#endif
 
 	return finalScore;
 }
@@ -277,7 +308,7 @@ bool minimax_isDiagonalWinnner(minimax_board_t* board, uint8_t* candidate) {
 
 // ----------------------------------------------------------------------------
 
-void minimax_printBoard(minimax_board_t* board) {
+void minimax_printBoard(minimax_board_t* board, minimax_move_t* move, bool mark) {
 	uint8_t row = 0, col = 0;
 
 	for (row=0; row<MINIMAX_BOARD_ROWS; row++) {
@@ -300,8 +331,16 @@ void minimax_printBoard(minimax_board_t* board) {
 				default:
 					c = 'E';
 			}
-
-			printf("%c ", c);
+			if (row == move->row && col == move->column && mark) {
+#if DEBUG_ALLOW_COLLOR
+				printf("\033[94m%c\033[0m ", c);
+#else
+				printf("%c*", c);
+#endif
+			} else {
+				printf("%c ", c);
+			}
+			
 		}
 		printf("\n\r");
 	}
