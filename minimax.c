@@ -10,7 +10,7 @@
 #define SCORES_MAX		(MINIMAX_BOARD_ROWS * MINIMAX_BOARD_COLUMNS)
 #define MOVES_MAX		SCORES_MAX
 
-#define DEBUG_PRINT			true
+#define DEBUG_PRINT			false
 #define DEBUG_ALLOW_COLLOR	true
 
 static bool playerIsX = false;
