@@ -57,6 +57,6 @@ void minimax_computeNextMove(minimax_board_t* board, bool player, uint8_t* row, 
 bool minimax_isGameOver(minimax_score_t score);
 
 // Returns the score of the board, based upon the player.
-int16_t minimax_computeBoardScore(minimax_board_t* board, bool player, uint8_t depth);
+int16_t minimax_computeBoardScore(minimax_board_t* board, bool player);
 
 #endif /* MINIMAX_H_ */
