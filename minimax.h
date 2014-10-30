@@ -11,6 +11,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdint.h>
+#include <cstring>
 
 // Defines the boundaries of the tic-tac-toe board.
 #define MINIMAX_BOARD_ROWS 3
